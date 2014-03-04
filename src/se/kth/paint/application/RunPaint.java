@@ -24,6 +24,7 @@ import se.kth.paint.view.PaintToolBar;
 public class RunPaint {
 	public RunPaint() {
 		EventQueue.invokeLater(new Runnable() {
+			@SuppressWarnings("unused")
 			public void run() {
 				try {
 					
@@ -47,6 +48,7 @@ public class RunPaint {
 					
 					// Add view observers to model
 					model.addObserver(canvas);
+					model.addObserver(toolBar);
 					
 					container.setBorder(new EmptyBorder(5, 5, 5, 5));
 					container.setLayout(new BorderLayout(0, 0));

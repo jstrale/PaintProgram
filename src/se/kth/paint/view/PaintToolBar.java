@@ -9,49 +9,120 @@
 
 package se.kth.paint.view;
 
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import se.kth.paint.model.PaintFacade;
+import se.kth.paint.model.Shape;
 
-public class PaintToolBar extends JToolBar {
+public class PaintToolBar extends JToolBar implements Observer {
 	
-	private PaintFacade mModel;
-	private JButton mButtonDelete, mButtonFill;
-	private JComboBox<String> mComboBoxShape;
-
-	public JButton getButtonDelete() {
-		return mButtonDelete;
-	}
-
-	public JButton getButtonFill() {
-		return mButtonFill;
-	}
-
 	private static final long serialVersionUID = 1L;
-	
+	private PaintFacade mModel;
+	private JButton mButtonDelete;
+	private JComboBox<String> mComboBoxShape;
+	private JComboBox<String> mComboBoxColor;
+	private JComboBox<String> mComboBoxLineWidth;
+	private JToggleButton mToggleButtonMark;
+	private JToggleButton mToggleButtonFill;
+
 	public PaintToolBar(PaintFacade model) {
+		
 		mModel = model;
+		
+		mToggleButtonMark = new JToggleButton("Mark");
+		add(mToggleButtonMark);
 		
 		mButtonDelete = new JButton("Delete");
 		this.add(mButtonDelete);
 		
 		mComboBoxShape = new JComboBox<String>();
-		mComboBoxShape.setModel(new DefaultComboBoxModel<String>(new String[] {"<Shapes>"}));
+		mComboBoxShape.setModel(fillComboBox(mModel.getPrototypeShapeNames()));
 		this.add(mComboBoxShape);
 		
-		JComboBox<String> comboBoxLineWidth = new JComboBox<String>();
-		comboBoxLineWidth.setModel(new DefaultComboBoxModel<String>(new String[] {"<LineWidth>"}));
-		this.add(comboBoxLineWidth);
+		mComboBoxLineWidth = new JComboBox<String>();
+		mComboBoxLineWidth.setModel(fillComboBox(mModel.getLineWidthOptions()));
+		this.add(mComboBoxLineWidth);
 		
-		JComboBox<String> comboBoxColor = new JComboBox<String>();
-		comboBoxColor.setModel(new DefaultComboBoxModel<String>(new String[] {"<Color>"}));
-		this.add(comboBoxColor);
+		mComboBoxColor = new JComboBox<String>();
+		mComboBoxColor.setModel(fillComboBox(mModel.getColors()));
+		this.add(mComboBoxColor);
 		
-		mButtonFill = new JButton("Fill");
-		this.add(mButtonFill);
+		mToggleButtonFill = new JToggleButton("Fill");
+		add(mToggleButtonFill);
 	}
 
+	public JToggleButton getButtonFill() {
+		return mToggleButtonFill;
+	}
+
+	public JButton getButtonDelete() {
+		return mButtonDelete;
+	}
+	
+	public JToggleButton getButtonMark() {
+		return mToggleButtonMark;
+	}
+	
+	public JComboBox<String> getComboBoxLineWidth() {
+		return mComboBoxLineWidth;
+	}
+	
+	public JComboBox<String> getComboBoxColor() {
+		return mComboBoxColor;
+	}
+	
+	public String getSelectedShape() {
+		return (String) mComboBoxShape.getSelectedItem();
+	}
+	
+	public String getSelectedColor() {
+		return (String) mComboBoxColor.getSelectedItem();
+	}
+	
+	public String getSelectedLineWidth() {
+		return (String) mComboBoxLineWidth.getSelectedItem();
+	}
+	
+	public boolean isButtonFillSelected() {
+		return mToggleButtonFill.isSelected();
+	}
+	
+	public boolean isMarkButtonSelected() {	
+		return mToggleButtonMark.isSelected();
+	}
+
+	private DefaultComboBoxModel<String> fillComboBox(ArrayList<String> list) {
+		
+		DefaultComboBoxModel<String> box = new DefaultComboBoxModel<String>();
+		
+		for(String s : list) {
+			box.addElement(s);
+		}
+		return box;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		
+		Shape markedShape = mModel.getMarkedShapeCopy();
+		
+		if(markedShape != null) {
+			mComboBoxShape.setSelectedItem(markedShape.getName());
+			mComboBoxShape.setEnabled(false);
+			mComboBoxLineWidth.setSelectedItem(mModel.getLineWidthName(markedShape.getLineWidth()));
+			mComboBoxColor.setSelectedItem(mModel.getColorName(markedShape.getColor()));
+			mToggleButtonFill.setSelected(markedShape.isFilled());
+		} else {
+			mComboBoxShape.setEnabled(true);
+			mToggleButtonFill.setSelected(false);
+		}
+	}
 }

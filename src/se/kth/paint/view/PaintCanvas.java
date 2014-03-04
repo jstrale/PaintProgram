@@ -17,7 +17,7 @@ import java.util.Observer;
 import javax.swing.JPanel;
 
 import se.kth.paint.model.PaintFacade;
-import se.kth.paint.model.Position;
+import se.kth.paint.model.Shape;
 
 public class PaintCanvas extends JPanel implements Observer {
 
@@ -26,22 +26,18 @@ public class PaintCanvas extends JPanel implements Observer {
 	
 	public PaintCanvas(PaintFacade model) {
 		this.setBackground(Color.WHITE);
-		mModel = model; 
+		mModel = model;
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		ArrayList<Position> posList = mModel.getTestPos();
+		ArrayList<Shape> shapes = mModel.getDrawnShapes();
 		
-		for(Position p: posList) {
-			paintOval(g, p.getX(), p.getY());
+		for(Shape s : shapes) {
+			s.draw(g);
 		}
-	}
-
-	private void paintOval(Graphics g, int x, int y) {
-		g.drawOval(x, y, 10, 10);
 	}
 
 	@Override
