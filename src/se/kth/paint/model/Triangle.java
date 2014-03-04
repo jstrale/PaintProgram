@@ -1,3 +1,11 @@
+/**
+ * Description: Represents a shape in the form of a triangle
+ * 
+ * @author Helena Lindén, Johan Stråle
+ * @since 2014-03-04
+ * 
+ */
+
 package se.kth.paint.model;
 
 import java.awt.Graphics2D;
