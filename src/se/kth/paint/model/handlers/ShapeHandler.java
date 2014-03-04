@@ -1,9 +1,12 @@
 package se.kth.paint.model.handlers;
 
+
 import java.util.ArrayList;
 
 import se.kth.paint.model.Oval;
+import se.kth.paint.model.Rectangle;
 import se.kth.paint.model.Shape;
+import se.kth.paint.model.Triangle;
 
 public class ShapeHandler {
 
@@ -12,6 +15,8 @@ public class ShapeHandler {
 		ArrayList<Shape> shapes = new ArrayList<Shape>();
 		
 		shapes.add(new Oval());
+		shapes.add(new Rectangle());
+		shapes.add(new Triangle());
 		
 		return shapes;
 	}
