@@ -1,3 +1,9 @@
+/**
+ * Description: Represents a shape in the form of a star
+ * 
+ * @author Johan Stråle
+ * @since 2014-03-10
+ */
 package se.kth.paint.model;
 
 import java.awt.Graphics2D;
