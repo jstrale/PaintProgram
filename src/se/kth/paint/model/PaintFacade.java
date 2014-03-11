@@ -11,17 +11,28 @@ package se.kth.paint.model;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
+import java.util.Stack;
 
+import se.kth.paint.model.commands.AddShape;
+import se.kth.paint.model.commands.ColorShape;
+import se.kth.paint.model.commands.DeleteShape;
+import se.kth.paint.model.commands.FillShape;
+import se.kth.paint.model.commands.LineWidthShape;
+import se.kth.paint.model.commands.UnfillShape;
 import se.kth.paint.model.handlers.ColorHandler;
 import se.kth.paint.model.handlers.LineWidthHandler;
 import se.kth.paint.model.handlers.ShapeHandler;
+import se.kth.paint.model.interfaces.EditCommand;
 
 public class PaintFacade extends Observable {
 
-	private ArrayList<Shape> mDrawnShapes;
-	private ArrayList<Shape> mPrototypeShapes;
-	private ArrayList<String> mColors;
+	private static final int UNDO_STACK_SIZE = 10;
+	private List<Shape> mDrawnShapes;
+	private List<Shape> mPrototypeShapes;
+	private Stack<EditCommand> mUndoStack;
+	private List<String> mColors;
 	private ColorHandler mColorHandler;
 	private LineWidthHandler mLineWidthHandler;
 
@@ -29,6 +40,7 @@ public class PaintFacade extends Observable {
 
 		mDrawnShapes = new ArrayList<Shape>();
 		mPrototypeShapes = new ArrayList<Shape>();
+		mUndoStack = new FixedStack<EditCommand>(UNDO_STACK_SIZE);
 		mColorHandler = new ColorHandler();
 		mLineWidthHandler = new LineWidthHandler();
 
@@ -52,6 +64,9 @@ public class PaintFacade extends Observable {
 			shape.init(mColorHandler.getColor(color),
 					mLineWidthHandler.getLineWidth(lineWidth), isFilled, x, y);
 			mDrawnShapes.add(shape);
+
+			mUndoStack.push(new AddShape(shape, mDrawnShapes));
+
 			setChanged();
 			notifyObservers();
 		}
@@ -62,6 +77,7 @@ public class PaintFacade extends Observable {
 		Shape shapeToDelete = getMarkedShape();
 
 		if (shapeToDelete != null) {
+			mUndoStack.push(new DeleteShape(shapeToDelete, mDrawnShapes));
 			mDrawnShapes.remove(shapeToDelete);
 			notifyChange(true);
 		}
@@ -103,10 +119,13 @@ public class PaintFacade extends Observable {
 		Shape shape = getMarkedShape();
 
 		if (shape != null) {
-			if (shape.isFilled())
+			if (shape.isFilled()) {
+				mUndoStack.push(new UnfillShape(shape));
 				shape.unsetFilled();
-			else
+			} else {
+				mUndoStack.push(new FillShape(shape));
 				shape.setFilled();
+			}
 			notifyChange(true);
 		}
 	}
@@ -115,6 +134,7 @@ public class PaintFacade extends Observable {
 		Shape shape = getMarkedShape();
 
 		if (shape != null) {
+			mUndoStack.push(new LineWidthShape(shape));
 			shape.setLineWidth(mLineWidthHandler.getLineWidth(width));
 			notifyChange(true);
 		}
@@ -122,14 +142,14 @@ public class PaintFacade extends Observable {
 
 	public void setMarkedShapeColor(String color) {
 		Shape shape = getMarkedShape();
-
 		if (shape != null) {
+			mUndoStack.push(new ColorShape(shape));
 			shape.setColor(mColorHandler.getColor(color));
 			notifyChange(true);
 		}
 	}
 
-	public ArrayList<Shape> getDrawnShapes() {
+	public List<Shape> getDrawnShapes() {
 		return mDrawnShapes;
 	}
 
@@ -146,8 +166,8 @@ public class PaintFacade extends Observable {
 		return shape;
 	}
 
-	public ArrayList<String> getPrototypeShapeNames() {
-		ArrayList<String> shapeNames = new ArrayList<String>();
+	public List<String> getPrototypeShapeNames() {
+		List<String> shapeNames = new ArrayList<String>();
 
 		for (Shape shape : mPrototypeShapes) {
 			shapeNames.add(shape.getName());
@@ -159,7 +179,7 @@ public class PaintFacade extends Observable {
 		return mLineWidthHandler.getLineWidths();
 	}
 
-	public ArrayList<String> getColors() {
+	public List<String> getColors() {
 		return mColors;
 	}
 
@@ -193,5 +213,23 @@ public class PaintFacade extends Observable {
 			setChanged();
 			notifyObservers();
 		}
+	}
+
+	public void undo() {
+
+		if (!mUndoStack.empty()) {
+			print();
+			EditCommand cmd = mUndoStack.pop();
+			cmd.undo();
+			notifyChange(true);
+		}
+	}
+	
+	private void print() {
+		
+		for(EditCommand e : mUndoStack) {
+			System.out.println(e.getClass().getSimpleName());
+		}
+		System.out.println("-------------------");
 	}
 }

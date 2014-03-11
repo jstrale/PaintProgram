@@ -10,6 +10,8 @@ package se.kth.paint.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -34,8 +36,10 @@ public class PaintController {
 				.addActionListener(new ButtonDeleteListener());
 		mToolBar.getButtonFill().addActionListener(new ButtonFillListener());
 		mToolBar.getButtonMark().addActionListener(new ButtonMarkListener());
-		mToolBar.getComboBoxLineWidth().addActionListener(new ComboBoxLineWidthListener());
-		mToolBar.getComboBoxColor().addActionListener(new ComboBoxColorListener());
+		mToolBar.getComboBoxLineWidth().addItemListener(
+				new ComboBoxLineWidthListener());
+		mToolBar.getComboBoxColor()
+				.addItemListener(new ComboBoxColorListener());
 	}
 
 	private class CanvasMouseListener implements MouseListener {
@@ -83,7 +87,7 @@ public class PaintController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 			mModel.deleteShape();
 		}
 
@@ -102,28 +106,29 @@ public class PaintController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
 			if (!mToolBar.isMarkButtonSelected()) {
 				mModel.unmarkAllShapes();
 			}
 		}
 	}
-	
-	private class ComboBoxLineWidthListener implements ActionListener {
+
+	private class ComboBoxLineWidthListener implements ItemListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			
-			mModel.setMarkedShapeLineWidth(mToolBar.getSelectedLineWidth());
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				mModel.setMarkedShapeLineWidth(mToolBar.getSelectedLineWidth());
+			}
 		}
 	}
-	
-	private class ComboBoxColorListener implements ActionListener {
+
+	private class ComboBoxColorListener implements ItemListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			
-			mModel.setMarkedShapeColor(mToolBar.getSelectedColor());
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				mModel.setMarkedShapeColor(mToolBar.getSelectedColor());
+			}
 		}
 	}
 }

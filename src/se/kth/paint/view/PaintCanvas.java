@@ -10,7 +10,7 @@ package se.kth.paint.view;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -33,7 +33,7 @@ public class PaintCanvas extends JPanel implements Observer {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		ArrayList<Shape> shapes = mModel.getDrawnShapes();
+		List<Shape> shapes = mModel.getDrawnShapes();
 		
 		for(Shape s : shapes) {
 			s.draw(g);

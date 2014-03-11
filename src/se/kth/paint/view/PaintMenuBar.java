@@ -39,4 +39,7 @@ public class PaintMenuBar extends JMenuBar {
 		menuEdit.add(mMenuItemUndo);
 	}
 
+	public JMenuItem getMenuItemUndo() {
+		return mMenuItemUndo;
+	}
 }

@@ -9,7 +9,7 @@
 
 package se.kth.paint.view;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -99,7 +99,7 @@ public class PaintToolBar extends JToolBar implements Observer {
 		return mToggleButtonMark.isSelected();
 	}
 
-	private DefaultComboBoxModel<String> fillComboBox(ArrayList<String> list) {
+	private DefaultComboBoxModel<String> fillComboBox(List<String> list) {
 		
 		DefaultComboBoxModel<String> box = new DefaultComboBoxModel<String>();
 		

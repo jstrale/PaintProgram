@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import se.kth.paint.controller.PaintController;
+import se.kth.paint.controller.PaintMenuBarController;
 import se.kth.paint.model.PaintFacade;
 import se.kth.paint.view.PaintCanvas;
 import se.kth.paint.view.PaintMenuBar;
@@ -44,7 +45,7 @@ public class RunPaint {
 					PaintToolBar toolBar = new PaintToolBar(model);
 					PaintCanvas canvas = new PaintCanvas(model);
 					PaintController controller = new PaintController(toolBar, canvas, model);
-					//PaintMenuBarController menuBarController = new PaintMenuBarController(model);
+					PaintMenuBarController menuBarController = new PaintMenuBarController(menuBar, model);
 					
 					// Add view observers to model
 					model.addObserver(canvas);
