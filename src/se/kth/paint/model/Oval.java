@@ -12,6 +12,8 @@ import java.awt.Graphics2D;
 
 public class Oval extends Shape {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected void drawShape(Graphics2D g2) {
 		g2.drawOval(this.getPos().getX(), this.getPos().getY(), Shape.SIZE, Shape.SIZE);

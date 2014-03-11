@@ -10,6 +10,7 @@
 package se.kth.paint.model;
 
 import java.awt.Color;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -22,6 +23,7 @@ import se.kth.paint.model.commands.FillShape;
 import se.kth.paint.model.commands.LineWidthShape;
 import se.kth.paint.model.commands.UnfillShape;
 import se.kth.paint.model.handlers.ColorHandler;
+import se.kth.paint.model.handlers.FileHandler;
 import se.kth.paint.model.handlers.LineWidthHandler;
 import se.kth.paint.model.handlers.ShapeHandler;
 import se.kth.paint.model.interfaces.EditCommand;
@@ -218,18 +220,31 @@ public class PaintFacade extends Observable {
 	public void undo() {
 
 		if (!mUndoStack.empty()) {
-			print();
 			EditCommand cmd = mUndoStack.pop();
 			cmd.undo();
 			notifyChange(true);
 		}
 	}
 	
-	private void print() {
+	public void clearCanvas() {
+		mDrawnShapes.clear();
+		mUndoStack.clear();
+		notifyChange(true);
+	}
+	
+	public boolean saveFile(File file) {
+		return FileHandler.saveFile(file, mDrawnShapes);
+	}
+	
+	public boolean openFile(File file) {
+		List<Shape> shapes = FileHandler.openFile(file);
 		
-		for(EditCommand e : mUndoStack) {
-			System.out.println(e.getClass().getSimpleName());
-		}
-		System.out.println("-------------------");
+		if(shapes == null)
+			return false;
+		
+		mDrawnShapes = shapes;
+		mUndoStack.clear();
+		notifyChange(true);
+		return true;
 	}
 }

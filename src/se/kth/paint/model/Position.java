@@ -8,8 +8,11 @@
 
 package se.kth.paint.model;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private int mX, mY;
 
 	public Position(int x, int y) {
@@ -24,8 +27,4 @@ public class Position {
 	public int getY() {
 		return mY;
 	}
-	
-	
-	
-	
 }

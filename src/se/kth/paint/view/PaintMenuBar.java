@@ -42,4 +42,16 @@ public class PaintMenuBar extends JMenuBar {
 	public JMenuItem getMenuItemUndo() {
 		return mMenuItemUndo;
 	}
+
+	public JMenuItem getMenuItemNew() {
+		return mMenuItemNew;
+	}
+
+	public JMenuItem getMenuItemSave() {
+		return mMenuItemSave;
+	}
+
+	public JMenuItem getMenuItemOpen() {
+		return mMenuItemOpen;
+	}
 }

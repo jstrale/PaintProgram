@@ -12,12 +12,14 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serializable;
 
 import se.kth.paint.model.handlers.ColorHandler;
 import se.kth.paint.model.interfaces.Copyable;
 
-public abstract class Shape implements Copyable {
+public abstract class Shape implements Copyable, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	public final static int SIZE = 50;
 	private Color mColor;
 	private int mLineWidth;
